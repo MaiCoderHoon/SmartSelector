@@ -12,8 +12,8 @@ def build_response(sections: List[SectionData]) -> Dict[str, Any]:
     rankings = rank_sections(sections)
     statistics = generate_analytics(rankings)
     
-    # We take the top 5 SectionRanking objects for 'topSections'
-    top_sections = rankings[:5]
+    # We take the top 10 SectionRanking objects for 'topSections'
+    top_sections = rankings[:10]
     
     response = UnifiedResponse(
         statistics=statistics,

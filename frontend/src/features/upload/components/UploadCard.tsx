@@ -5,8 +5,13 @@ import { UploadProgress } from './UploadProgress';
 import { useUpload } from '../hooks/useUpload';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
+import type { UploadResponse } from '../types/upload';
 
-export const UploadCard: React.FC = () => {
+export interface UploadCardProps {
+  onUploadSuccess?: (data: UploadResponse) => void;
+}
+
+export const UploadCard: React.FC<UploadCardProps> = ({ onUploadSuccess }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [localError, setLocalError] = useState<string | null>(null);
   
@@ -33,7 +38,11 @@ export const UploadCard: React.FC = () => {
 
   const handleUpload = () => {
     if (selectedFile) {
-      uploadFile(selectedFile);
+      uploadFile(selectedFile, {
+        onSuccess: (data) => {
+          onUploadSuccess?.(data);
+        }
+      });
     }
   };
 
