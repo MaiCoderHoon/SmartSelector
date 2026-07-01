@@ -19,3 +19,12 @@ async def save_upload_file(file: UploadFile) -> str:
         file.file.close()
         
     return file_path
+
+async def save_upload_files(files: list[UploadFile]) -> list[str]:
+    """
+    Saves multiple uploaded files.
+    """
+    paths = []
+    for f in files:
+        paths.append(await save_upload_file(f))
+    return paths

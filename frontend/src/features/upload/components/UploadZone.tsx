@@ -5,7 +5,7 @@ import { UploadCloud } from 'lucide-react';
 import { cn } from '@/lib/utils'; // Assuming shadcn/ui utils is here
 
 interface UploadZoneProps {
-  onFileSelect: (file: File) => void;
+  onFileSelect: (files: File[]) => void;
   onError: (error: string) => void;
   disabled?: boolean;
 }
@@ -21,7 +21,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onFileSelect, onError, d
       }
       
       if (acceptedFiles.length > 0) {
-        onFileSelect(acceptedFiles[0]);
+        onFileSelect(acceptedFiles);
       }
     },
     [onFileSelect, onError]
@@ -35,7 +35,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onFileSelect, onError, d
       'text/csv': ['.csv'],
     },
     maxSize: 10 * 1024 * 1024, // 10MB
-    maxFiles: 1,
+    maxFiles: 5, // Allow up to 5 files at once
     disabled,
   });
 

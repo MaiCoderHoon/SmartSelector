@@ -12,7 +12,7 @@ export interface UploadCardProps {
 }
 
 export const UploadCard: React.FC<UploadCardProps> = ({ onUploadSuccess }) => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [localError, setLocalError] = useState<string | null>(null);
   
   const { 
@@ -24,21 +24,25 @@ export const UploadCard: React.FC<UploadCardProps> = ({ onUploadSuccess }) => {
     reset 
   } = useUpload();
 
-  const handleFileSelect = (file: File) => {
+  const handleFileSelect = (files: File[]) => {
     setLocalError(null);
-    setSelectedFile(file);
+    setSelectedFiles(prev => [...prev, ...files].slice(0, 5)); // max 5 files
     reset(); // Reset previous upload states
   };
 
-  const handleRemove = () => {
-    setSelectedFile(null);
-    setLocalError(null);
-    reset();
+  const handleRemove = (index?: number) => {
+    if (index !== undefined) {
+      setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+    } else {
+      setSelectedFiles([]);
+      setLocalError(null);
+      reset();
+    }
   };
 
   const handleUpload = () => {
-    if (selectedFile) {
-      uploadFile(selectedFile, {
+    if (selectedFiles.length > 0) {
+      uploadFile(selectedFiles, {
         onSuccess: (data) => {
           onUploadSuccess?.(data);
         }
@@ -46,7 +50,19 @@ export const UploadCard: React.FC<UploadCardProps> = ({ onUploadSuccess }) => {
     }
   };
 
-  const displayError = localError || (error?.response?.data?.detail || error?.message) || null;
+  let displayError: string | null = localError;
+  if (!displayError && error) {
+    const detail = error.response?.data?.detail;
+    if (typeof detail === 'string') {
+      displayError = detail;
+    } else if (Array.isArray(detail)) {
+      displayError = detail.map((e: any) => e.msg || 'Validation Error').join(', ');
+    } else if (typeof detail === 'object' && detail !== null) {
+      displayError = (detail as any).message || (detail as any).error || JSON.stringify(detail);
+    } else {
+      displayError = error.message;
+    }
+  }
 
   return (
     <div className="w-full max-w-xl mx-auto bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
@@ -59,7 +75,7 @@ export const UploadCard: React.FC<UploadCardProps> = ({ onUploadSuccess }) => {
         </div>
 
         <AnimatePresence mode="wait">
-          {!selectedFile ? (
+          {selectedFiles.length === 0 ? (
             <motion.div
               key="upload-zone"
               initial={{ opacity: 0, y: 10 }}
@@ -81,11 +97,26 @@ export const UploadCard: React.FC<UploadCardProps> = ({ onUploadSuccess }) => {
               transition={{ duration: 0.2 }}
               className="space-y-6"
             >
-              <FilePreview 
-                file={selectedFile} 
-                onRemove={handleRemove} 
-                disabled={isPending || isSuccess}
-              />
+              <div className="space-y-3">
+                {selectedFiles.map((file, idx) => (
+                  <FilePreview 
+                    key={`${file.name}-${idx}`}
+                    file={file} 
+                    onRemove={() => handleRemove(idx)} 
+                    disabled={isPending || isSuccess}
+                  />
+                ))}
+              </div>
+              
+              {/* Optional: Add more files button if < 5 */}
+              {!isPending && !isSuccess && selectedFiles.length < 5 && (
+                <div className="mt-4">
+                  <UploadZone 
+                    onFileSelect={handleFileSelect} 
+                    onError={(err) => setLocalError(err)} 
+                  />
+                </div>
+              )}
               
               {isPending && <UploadProgress progress={progress} />}
               

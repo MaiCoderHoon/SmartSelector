@@ -7,8 +7,8 @@ import type { AxiosError } from 'axios';
 export const useUpload = () => {
   const [progress, setProgress] = useState(0);
 
-  const mutation = useMutation<UploadResponse, AxiosError<{ detail: string }>, File>({
-    mutationFn: (file: File) => uploadFile(file, setProgress),
+  const mutation = useMutation<UploadResponse, AxiosError<{ detail: string }>, File[]>({
+    mutationFn: (files: File[]) => uploadFile(files, setProgress),
     onSettled: () => {
       // Keep progress at 100 for a moment before clearing if needed,
       // but typically we let the component handle resetting.

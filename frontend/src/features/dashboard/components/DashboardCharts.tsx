@@ -1,4 +1,4 @@
-import { 
+import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
   PieChart, Pie, Legend
 } from 'recharts';
@@ -57,7 +57,7 @@ export function DashboardCharts({ data }: DashboardChartsProps) {
     .sort((a, b) => a.score - b.score);
 
   const ChartCard = ({ title, children, delay }: { title: string, children: React.ReactNode, delay: number }) => (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay }}
@@ -74,12 +74,12 @@ export function DashboardCharts({ data }: DashboardChartsProps) {
 
   return (
     <section className="grid gap-6 lg:grid-cols-2">
-      <ChartCard title="Top 5 Sections by Score" delay={0.2}>
+      <ChartCard title="Top 10 Sections by Score" delay={0.2}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={top5Data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <XAxis dataKey="name" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
             <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
-            <Tooltip 
+            <Tooltip
               cursor={{ fill: '#f8fafc' }}
               contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
             />
@@ -104,8 +104,8 @@ export function DashboardCharts({ data }: DashboardChartsProps) {
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
             </Pie>
-            <Tooltip 
-              formatter={(value: number) => [`${value.toFixed(1)}%`, 'Percentage']}
+            <Tooltip
+              formatter={(value: any) => [`${Number(value).toFixed(1)}%`, 'Percentage']}
               contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
             />
             <Legend verticalAlign="bottom" height={36} iconType="circle" />
@@ -118,9 +118,9 @@ export function DashboardCharts({ data }: DashboardChartsProps) {
           <BarChart data={scoreData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <XAxis dataKey="score" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
             <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
-            <Tooltip 
+            <Tooltip
               cursor={{ fill: '#f8fafc' }}
-              formatter={(value: number) => [value, 'Count']}
+              formatter={(value: any) => [value, 'Count']}
               contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
             />
             <Bar dataKey="count" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
@@ -133,7 +133,7 @@ export function DashboardCharts({ data }: DashboardChartsProps) {
           <BarChart data={facultyData} layout="vertical" margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
             <XAxis type="number" hide />
             <YAxis type="category" dataKey="name" tickLine={false} axisLine={false} tick={{ fontSize: 11 }} width={100} />
-            <Tooltip 
+            <Tooltip
               cursor={{ fill: '#f8fafc' }}
               contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
             />

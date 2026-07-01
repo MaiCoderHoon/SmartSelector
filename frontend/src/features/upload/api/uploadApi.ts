@@ -5,11 +5,13 @@ import type { UploadResponse } from '../types/upload';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 export const uploadFile = async (
-  file: File,
+  files: File[],
   onProgress?: (progress: number) => void
 ): Promise<UploadResponse> => {
   const formData = new FormData();
-  formData.append('file', file);
+  files.forEach(file => {
+    formData.append('files', file);
+  });
 
   const response = await axios.post<UploadResponse>(
     `${API_URL}/upload/`,

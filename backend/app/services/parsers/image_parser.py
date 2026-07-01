@@ -11,9 +11,9 @@ class ImageParser:
     def __init__(self, gemini_service: GeminiService = None):
         self.gemini_service = gemini_service or GeminiService()
 
-    def parse(self, image_path: str) -> dict:
+    def parse(self, image_paths: list[str]) -> dict:
         """
-        Parses the image using Gemini, validates the JSON output against the Pydantic schema,
+        Parses the images using Gemini, validates the JSON output against the Pydantic schema,
         and implements a 1-retry mechanism on validation failure.
         """
         attempts = 0
@@ -22,7 +22,7 @@ class ImageParser:
         
         while attempts < max_attempts:
             try:
-                raw_response = self.gemini_service.extract_timetable_json(image_path)
+                raw_response = self.gemini_service.extract_timetable_json(image_paths)
                 data = json.loads(raw_response)
                 
                 # Pre-processing: handle "Missing section: Skip the entry."
@@ -39,7 +39,7 @@ class ImageParser:
                 logger.warning(f"Parsing attempt {attempts} failed due to validation/JSON error: {last_error}")
             except Exception as e:
                 # System or API errors
-                raise HTTPException(status_code=500, detail={"error": "extraction_failed", "message": str(e)})
+                raise HTTPException(status_code=422, detail={"error": "extraction_failed", "message": str(e)})
                 
         # If we reach here, we exhausted our retries
         raise HTTPException(

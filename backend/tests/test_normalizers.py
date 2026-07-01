@@ -19,12 +19,16 @@ def test_section_validation():
     assert is_valid_section("Z99") is True
     assert is_valid_section("B0") is True
     
-    assert is_valid_section("a1") is False # lowercase
-    assert is_valid_section("AA1") is False # two letters
-    assert is_valid_section("A123") is False # three digits
-    assert is_valid_section("1A") is False
+    assert is_valid_section("a1") is True
+    assert is_valid_section("AA1") is True
+    assert is_valid_section("A123") is True
+    assert is_valid_section("1A") is True
+    assert is_valid_section("CSE-A") is True
+    
     assert is_valid_section("") is False
     assert is_valid_section(None) is False
+    assert is_valid_section("   ") is False
+    assert is_valid_section("a" * 31) is False
 
 def test_text_normalization():
     assert normalize_faculty_name(" john  doe ") == "John Doe"
@@ -64,7 +68,7 @@ def test_no_valid_sections():
     raw_data = {
         "sections": [
             {
-                "section": "invalid_section",
+                "section": "---",
                 "subjects": []
             }
         ]

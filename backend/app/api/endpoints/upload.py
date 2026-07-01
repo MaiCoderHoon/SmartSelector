@@ -12,27 +12,31 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
+from typing import List
+
 @router.post("/", response_model=UnifiedResponse)
-async def upload_file(file: UploadFile = File(...)):
-    if not file:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No file sent")
+async def upload_file(files: List[UploadFile] = File(...)):
+    if not files or len(files) == 0:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No files sent")
         
     # Validation
-    validate_file(file)
+    for file in files:
+        validate_file(file)
     
-    # Save the file
+    # Save the files
     try:
-        file_path = await save_upload_file(file)
+        from app.services.upload_service import save_upload_files
+        file_paths = await save_upload_files(files)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to save file: {str(e)}"
+            detail=f"Failed to save files: {str(e)}"
         )
         
     try:
         # Parse image
         parser = ImageParser()
-        parsed_data = parser.parse(file_path)
+        parsed_data = parser.parse(file_paths)
         
         # Normalize data
         normalized_data = ScheduleNormalizer.normalize(parsed_data)

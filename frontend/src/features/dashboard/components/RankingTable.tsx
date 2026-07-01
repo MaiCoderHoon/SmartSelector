@@ -6,9 +6,8 @@ import {
   getFilteredRowModel,
   getExpandedRowModel,
   flexRender,
-  ColumnDef,
-  SortingState
 } from '@tanstack/react-table';
+import type { ColumnDef, SortingState } from '@tanstack/react-table';
 import { ChevronDown, ChevronRight, Search, SlidersHorizontal, ArrowUpDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { SectionRanking, Subject } from '../../upload/types/upload';
@@ -21,7 +20,7 @@ interface RankingTableProps {
 export function RankingTable({ rankings }: RankingTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
-  
+
   // Filters state
   const [searchSection, setSearchSection] = useState('');
   const [searchProfessor, setSearchProfessor] = useState('');
@@ -142,7 +141,7 @@ export function RankingTable({ rankings }: RankingTableProps) {
       <div className="p-4 border-b border-slate-200 bg-slate-50/50 space-y-4">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <h3 className="text-lg font-bold text-slate-900">Rankings Overview</h3>
-          
+
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <div className="relative flex-1 sm:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
@@ -180,7 +179,7 @@ export function RankingTable({ rankings }: RankingTableProps) {
                   <label className="block text-xs font-medium text-slate-500 mb-1">Section</label>
                   <input
                     type="text"
-                    placeholder="e.g. A1"
+                    placeholder="e.g. CS6"
                     value={searchSection}
                     onChange={(e) => setSearchSection(e.target.value)}
                     className="w-full px-3 py-1.5 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
@@ -190,7 +189,7 @@ export function RankingTable({ rankings }: RankingTableProps) {
                   <label className="block text-xs font-medium text-slate-500 mb-1">Professor</label>
                   <input
                     type="text"
-                    placeholder="e.g. John Doe"
+                    placeholder="e.g. Aryannman Gyandu"
                     value={searchProfessor}
                     onChange={(e) => setSearchProfessor(e.target.value)}
                     className="w-full px-3 py-1.5 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
@@ -243,9 +242,9 @@ export function RankingTable({ rankings }: RankingTableProps) {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </th>
                 ))}
               </tr>
@@ -298,7 +297,7 @@ export function RankingTable({ rankings }: RankingTableProps) {
           </tbody>
         </table>
       </div>
-      
+
       {/* Footer Details */}
       <div className="p-4 border-t border-slate-200 bg-slate-50/50 flex justify-between items-center text-xs text-slate-500">
         <span>Showing {table.getRowModel().rows.length} of {rankings.length} sections</span>
