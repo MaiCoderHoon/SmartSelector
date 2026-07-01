@@ -1,7 +1,7 @@
 from typing import List, Optional, Literal
 from pydantic import BaseModel, Field
 
-ColorType = Literal["green", "yellow", "red", "white"]
+ColorType = str
 
 class SubjectData(BaseModel):
     course: Optional[str] = None
